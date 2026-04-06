@@ -77,6 +77,44 @@ A credit union member analytics platform: FastAPI backend with SQLAlchemy ORM, a
 
 ---
 
+## Deploy to Railway
+
+### Prerequisites
+- [Railway CLI](https://docs.railway.app/develop/cli) installed and logged in
+- A Railway project with a **PostgreSQL** add-on provisioned
+
+### Steps
+
+```bash
+# 1. Link repo to your Railway project
+railway link
+
+# 2. Add environment variables (Railway injects DATABASE_URL automatically from Postgres add-on)
+railway variables set ANTHROPIC_API_KEY=sk-ant-...
+
+# 3. Deploy
+railway up
+```
+
+Railway reads `railway.toml` and runs:
+```
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+`DATABASE_URL` is injected automatically by the Railway Postgres add-on. The app converts `postgres://` → `postgresql+psycopg2://` at startup, so no manual URL editing is needed.
+
+After deploying, ingest your data against the live URL:
+```bash
+curl -X POST https://<your-app>.railway.app/ingest \
+  -F "members=@data/raw/members.csv" \
+  -F "accounts=@data/raw/accounts.csv" \
+  -F "loans=@data/raw/loans.csv"
+```
+
+> **Note:** The Streamlit dashboard is a local dev tool — point `API_BASE` in `dashboard/app.py` at your Railway URL to use it against the deployed API.
+
+---
+
 ## Quick Start
 
 ### 1. Install dependencies

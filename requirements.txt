@@ -9,3 +9,4 @@ httpx
 anthropic
 streamlit
 plotly
+psycopg2-binary
