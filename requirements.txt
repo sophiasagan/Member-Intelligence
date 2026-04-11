@@ -10,3 +10,4 @@ anthropic
 streamlit
 plotly
 psycopg2-binary
+python-multipart
