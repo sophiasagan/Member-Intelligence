@@ -10,7 +10,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-API_BASE = "http://localhost:8000"
+API_BASE = "http://member-intelligence-production.up.railway.app"
 TIMEOUT = 30.0
 
 # ---------------------------------------------------------------------------
