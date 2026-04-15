@@ -147,7 +147,7 @@ def generate_member_insight(member_data: dict) -> MemberInsight:
 
     message = client.messages.create(
         model=_MODEL,
-        max_tokens=1024,
+        max_tokens=2048,
         system=_SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_message}],
     )
@@ -155,10 +155,18 @@ def generate_member_insight(member_data: dict) -> MemberInsight:
     raw = message.content[0].text.strip()
     logger.debug("Raw model response: %s", raw[:200])
 
+    # Slice from first { to last } — handles markdown fences or any leading/trailing prose
+    start = raw.find("{")
+    end = raw.rfind("}") + 1
+    if start == -1 or end == 0:
+        logger.error("Model returned non-JSON response: %r", raw)
+        raise ValueError(f"Model returned non-JSON response: {raw[:200]!r}")
+    json_str = raw[start:end]
+
     try:
-        parsed = json.loads(raw)
+        parsed = json.loads(json_str)
     except json.JSONDecodeError as exc:
-        logger.error("Model returned non-JSON response: %s", raw)
+        logger.error("Model returned unparseable JSON: %r", json_str)
         raise ValueError(f"Model returned non-JSON response: {exc}") from exc
 
     return MemberInsight(
