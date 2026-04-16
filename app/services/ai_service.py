@@ -149,24 +149,20 @@ def generate_member_insight(member_data: dict) -> MemberInsight:
         model=_MODEL,
         max_tokens=2048,
         system=_SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_message}],
+        messages=[
+            {"role": "user", "content": user_message},
+            {"role": "assistant", "content": "{"},
+        ],
     )
 
-    raw = message.content[0].text.strip()
+    # Prepend the prefilled brace — the model continues from "{" so markdown fences are impossible
+    raw = "{" + message.content[0].text
     logger.debug("Raw model response: %s", raw[:200])
 
-    # Slice from first { to last } — handles markdown fences or any leading/trailing prose
-    start = raw.find("{")
-    end = raw.rfind("}") + 1
-    if start == -1 or end == 0:
-        logger.error("Model returned non-JSON response: %r", raw)
-        raise ValueError(f"Model returned non-JSON response: {raw[:200]!r}")
-    json_str = raw[start:end]
-
     try:
-        parsed = json.loads(json_str)
+        parsed = json.loads(raw)
     except json.JSONDecodeError as exc:
-        logger.error("Model returned unparseable JSON: %r", json_str)
+        logger.error("Model returned unparseable JSON: %r", raw[:200])
         raise ValueError(f"Model returned non-JSON response: {exc}") from exc
 
     return MemberInsight(
