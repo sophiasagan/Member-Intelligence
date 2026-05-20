@@ -2,8 +2,6 @@
 
 > AI-powered member analytics for credit unions — ingest member data, run ETL pipelines, and generate AI-driven financial insights.
 
-<!-- Demo GIF: upload member intelligence.gif to a GitHub Release, then replace this comment with: -->
-<!-- ![Demo](https://github.com/<your-username>/<your-repo>/releases/download/v1.0/member.intelligence.gif) -->
 
 ---
 
