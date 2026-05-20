@@ -27,3 +27,7 @@ data/processed/
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude Code — never commit these
+.claude/
+CLAUDE.md
