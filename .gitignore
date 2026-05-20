@@ -24,6 +24,9 @@ data/processed/
 # Streamlit
 .streamlit/
 
+# Large media — host on GitHub Releases or LFS instead
+*.gif
+
 # OS
 .DS_Store
 Thumbs.db
